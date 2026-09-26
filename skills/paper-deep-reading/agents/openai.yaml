@@ -1,6 +1,6 @@
 interface:
   display_name: "论文精读"
-  short_description: "对话解读论文机制与证据，或生成可核验的精读网页"
-  default_prompt: "使用 $paper-deep-reading 解读这篇论文；先按我的问题在对话中讲清机制与证据，如我明确要求再生成完整 HTML。"
+  short_description: "完整分析论文机制、证据、最新文献与优化方向"
+  default_prompt: "使用 $paper-deep-reading 完整分析并审视这篇论文，核验最新相关文献，提出可验证的优化方向。"
 policy:
   allow_implicit_invocation: true
