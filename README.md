@@ -192,7 +192,6 @@ paper-reading-skill/
   .gitignore
 ```
 
-源码发布不包含 `.venv`、`.test-deps`、`work`、缓存或第三方论文。源码包含 Skill 与安装代码；Python wheel 含运行库、HTML 模板、JSON Schema，不单独包含 Skill，分发 Skill 时使用源码包。
 
 ## 自行完整测试
 
