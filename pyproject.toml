@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "paper-reading-kit"
-version = "0.3.0"
+version = "0.4.0"
 description = "Evidence-first PDF reading skill and offline HTML toolkit"
 readme = "README.md"
 requires-python = ">=3.10"
