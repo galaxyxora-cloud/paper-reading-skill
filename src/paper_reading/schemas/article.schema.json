@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["title", "authors", "affiliations", "contribution", "pdf", "inspection", "resources", "verification", "figures", "sections", "audit"],
+  "properties": {
+    "title": {"type":"string","minLength":1},
+    "authors": {"type":"string","minLength":1},
+    "affiliations": {"type":"string","minLength":1},
+    "contribution": {"type":"string","minLength":1},
+    "pdf": {"type":"string","minLength":1},
+    "inspection": {"type":"string","minLength":1},
+    "resources": {"type":"array","items":{"type":"object","required":["label","url"],"properties":{"label":{"type":"string","minLength":1},"url":{"type":"string","pattern":"^https?://[^/]+"}}}},
+    "verification": {"type":"object","required":["title_authors_abstract_sections","element_locations_reviewed","crops_visually_reviewed"],"properties":{"title_authors_abstract_sections":{"type":"boolean"},"element_locations_reviewed":{"type":"boolean"},"crops_visually_reviewed":{"type":"boolean"},"figure_exception":{"enum":["none_in_pdf","not_visible_in_pdf"]},"exception_reason":{"type":"string","minLength":1}}},
+    "figures": {"type":"array","items":{"type":"object","required":["id","path","label","caption","page"],"properties":{"id":{"type":"string","pattern":"^[a-z][a-z0-9-]*$"},"path":{"type":"string","minLength":1},"label":{"type":"string","minLength":1},"caption":{"type":"string","minLength":1},"page":{"type":"integer","minimum":1}}}},
+    "sections": {"type":"array","minItems":1,"items":{"type":"object","required":["id","title","html"],"properties":{"id":{"type":"string","pattern":"^[a-z][a-z0-9-]*$"},"title":{"type":"string","minLength":1},"html":{"type":"string","minLength":1}}}},
+    "audit": {"type":"array","items":{"type":"object","required":["item","status","detail"],"properties":{"item":{"type":"string"},"status":{"type":"string"},"detail":{"type":"string"}}}}
+  }
+}

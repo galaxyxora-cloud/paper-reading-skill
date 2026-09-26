@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paper-reading-kit"
+version = "0.2.0"
+description = "Evidence-first PDF reading skill and offline HTML toolkit"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["PyMuPDF>=1.24,<2", "beautifulsoup4>=4.12,<5", "Jinja2>=3.1,<4", "jsonschema>=4.23,<5"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+qa = ["playwright>=1.48,<2"]
+
+[project.scripts]
+paper-read = "paper_reading.cli:main"
+
+[tool.setuptools.package-data]
+paper_reading = ["templates/*.html", "schemas/*.json"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

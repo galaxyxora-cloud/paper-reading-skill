@@ -1,0 +1,6 @@
+interface:
+  display_name: "论文精读 HTML"
+  short_description: "核验 PDF 正文与图表，制作结构清晰、证据可追溯的离线论文精读网页"
+  default_prompt: "使用 $paper-deep-reading 精读提供的论文 PDF，生成可离线打开的单文件 HTML。"
+policy:
+  allow_implicit_invocation: true

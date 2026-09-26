@@ -1,0 +1,31 @@
+{
+  "title": "替换为核验后的论文标题",
+  "authors": "作者",
+  "affiliations": "机构（原文未报告时如实说明）",
+  "contribution": "替换为有证据的一句话贡献",
+  "pdf": "paper.pdf",
+  "inspection": "inspection.json",
+  "resources": [],
+  "verification": {
+    "title_authors_abstract_sections": false,
+    "element_locations_reviewed": false,
+    "crops_visually_reviewed": false
+  },
+  "figures": [{"id":"fig1","path":"figure1.png","label":"Figure 1","caption":"替换为读图解释、重点和论证关系。","page":1}],
+  "sections": [
+    {"id":"overview","title":"论文概览","html":"<p>替换为精读内容。</p>"},
+    {"id":"resources","title":"投稿与资源信息","html":"<p>记录检索日期与来源。</p>"},
+    {"id":"motivation","title":"背景与动机","html":"<p>常见 pipeline 与断点。</p>"},
+    {"id":"problem","title":"核心瓶颈","html":"<p>输入、输出、失败模式和假设。</p>"},
+    {"id":"pipeline","title":"方法总览","html":"<p>训练与推理的数据流。</p><figure data-asset=\"fig1\"></figure>"},
+    {"id":"method","title":"核心方法精读","html":"<p>按实际模块展开并就地解释公式。</p>"},
+    {"id":"setup","title":"如何读实验","html":"<p>划分、设置与指标口径。</p>"},
+    {"id":"results","title":"主要结果","html":"<p>按结论组织证据。</p>"},
+    {"id":"ablation","title":"消融分析","html":"<p>按验证问题组织。</p>"},
+    {"id":"cases","title":"可视化与失败案例","html":"<p>原文证据或未报告说明。</p>"},
+    {"id":"limits","title":"优点、不足与隐含假设","html":"<p>区分作者讨论和读者分析。</p>"},
+    {"id":"outlook","title":"研究与工程启发","html":"<p>可检验的下一步。</p>"},
+    {"id":"conclusion","title":"总结","html":"<p>贡献、证据、局限、方向。</p>"}
+  ],
+  "audit": [{"item":"示例状态","status":"未验证","detail":"此文件仅为输入模板，故意不能通过生成门槛。"}]
+}
