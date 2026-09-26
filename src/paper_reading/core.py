@@ -6,6 +6,7 @@ import json
 import re
 import os
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
@@ -44,6 +45,13 @@ def validate_article(data):
         raise ValueError("article.json 字段错误 " + ".".join(map(str, error.path)) + ": " + error.message)
 
 
+def validate_state(data):
+    schema = json.loads((Path(__file__).parent / "schemas/workspace.schema.json").read_text(encoding="utf-8"))
+    errors = sorted(Draft202012Validator(schema).iter_errors(data), key=lambda e: str(list(e.path)))
+    if errors:
+        error = errors[0]
+        raise ValueError("state.json 字段错误 " + ".".join(map(str, error.path)) + ": " + error.message)
+
 def dump(path, value):
     path = Path(path)
     write_atomic(path, json.dumps(value, ensure_ascii=False, indent=2).encode("utf-8"))
@@ -52,6 +60,70 @@ def dump(path, value):
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
+
+def init_workspace(source, out):
+    out = Path(out)
+    if out.exists() and any(out.iterdir() if out.is_dir() else [out]):
+        raise ValueError("任务目录已存在且非空；请选择新目录或显式整理已有任务")
+    out.mkdir(parents=True, exist_ok=True)
+    data = {
+        "version": 1,
+        "source": str(source),
+        "stage": "initialized",
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "objective": {"audience": "相关学科研究生", "focus": [], "deliverable": "evidence-based-html"},
+        "completed": [],
+        "next_actions": ["获取并核验 PDF", "运行 inspect 并阅读逐页正文"],
+        "evidence": [],
+        "claims": [],
+        "symbols": [],
+        "artifacts": {},
+        "open_questions": [],
+        "decisions": [],
+        "last_error": None,
+        "handoff": "从 next_actions 第一项继续；完成一步后立即更新本文件。"
+    }
+    validate_state(data)
+    dump(out / "state.json", data)
+    return data
+
+
+def check_state(path):
+    path = Path(path)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    validate_state(data)
+    base = path.parent
+    errors = []
+    root = base.resolve()
+    for name, artifact in data["artifacts"].items():
+        artifact_path = (base / artifact["path"]).resolve()
+        try:
+            artifact_path.relative_to(root)
+        except ValueError:
+            errors.append(f"产物路径越出任务目录: {name}")
+            continue
+        if artifact["status"] in ("ready", "verified") and not artifact_path.is_file():
+            errors.append(f"产物不存在: {name}")
+        expected = artifact.get("sha256")
+        if expected and artifact_path.is_file() and digest(artifact_path) != expected:
+            errors.append(f"产物哈希不匹配: {name}")
+    evidence_ids = {item["id"] for item in data["evidence"]}
+    if len(evidence_ids) != len(data["evidence"]):
+        errors.append("证据 id 重复")
+    claim_ids = {item["id"] for item in data["claims"]}
+    if len(claim_ids) != len(data["claims"]):
+        errors.append("主张 id 重复")
+    for claim in data["claims"]:
+        missing = set(claim["evidence_ids"]) - evidence_ids
+        if missing:
+            errors.append(f"主张引用未知证据: {claim['id']} -> {', '.join(sorted(missing))}")
+    if data["stage"] == "finalized":
+        finals = [item for item in data["artifacts"].values() if item["kind"] == "final-html" and item["status"] == "verified"]
+        if not finals:
+            errors.append("finalized 阶段缺少已核验 final-html")
+        if data["next_actions"]:
+            errors.append("finalized 阶段 next_actions 必须为空")
+    return {"passed": not errors, "stage": data["stage"], "updated_at": data["updated_at"], "next_actions": data["next_actions"], "open_questions": len(data["open_questions"]), "errors": errors}
 
 def pdf_valid(data):
     if not data.lstrip().startswith(b"%PDF-"):

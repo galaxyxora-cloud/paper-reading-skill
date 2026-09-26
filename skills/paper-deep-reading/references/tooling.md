@@ -5,15 +5,19 @@
 如果命令不在 PATH，用安装该库的 Python 运行 `python -m paper_reading` 替代 `paper-read`。`doctor` 检查版本与 Chromium 文件；实际能否启动浏览器由 browser-check 确认。
 
 ```bash
-paper-read fetch https://arxiv.org/pdf/XXXX.XXXXX --out work/paper.pdf
-paper-read inspect work/paper.pdf --out work/inspection.json
-paper-read render-page work/paper.pdf --page 3 --out work/page3.png
-paper-read crop work/paper.pdf --page 3 --box 40 70 555 350 --out work/figure1.png
-paper-read build work/article.json --out work/reading.draft.html
-paper-read check work/reading.draft.html
-paper-read browser-check work/reading.draft.html --out work/browser-check.json
-paper-read finalize work/reading.draft.html --qa work/browser-check.json --out work/reading.html
+paper-read workspace https://arxiv.org/pdf/XXXX.XXXXX --out work/paper-id
+paper-read state-check work/paper-id/state.json
+paper-read fetch https://arxiv.org/pdf/XXXX.XXXXX --out work/paper-id/paper.pdf
+paper-read inspect work/paper-id/paper.pdf --out work/paper-id/inspection.json
+paper-read render-page work/paper-id/paper.pdf --page 3 --out work/paper-id/page3.png
+paper-read crop work/paper-id/paper.pdf --page 3 --box 40 70 555 350 --out work/paper-id/figure1.png
+paper-read build work/paper-id/article.json --out work/paper-id/reading.draft.html
+paper-read check work/paper-id/reading.draft.html
+paper-read browser-check work/paper-id/reading.draft.html --out work/paper-id/browser-check.json
+paper-read finalize work/paper-id/reading.draft.html --qa work/paper-id/browser-check.json --out work/paper-id/reading.html
 ```
+
+workspace 创建非空时拒绝覆盖的任务目录和 state.json；state-check 校验结构、产物存在性与哈希、主张引用的证据 ID，以及最终阶段约束。state.json 的完整字段与更新纪律见 [可恢复工作状态](state.md)。路径相对于 state.json 所在目录。
 
 页码从 1 开始；裁剪坐标为 PDF 页面旋转后的可见坐标，左上原点、单位 point。候选元素检测不可靠时查阅逐页 blocks 与渲染图。全页裁剪默认拒绝。fetch 按给定 URL 优先，再解析页面 PDF 链接，再 arXiv 回退；最多 12 个候选、每请求 30 秒、100 MiB 上限，保留 attempts 日志。不自动绕过登录/付费墙。
 

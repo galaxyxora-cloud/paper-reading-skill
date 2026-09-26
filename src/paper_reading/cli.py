@@ -3,13 +3,18 @@ import json
 import sys
 import importlib.metadata
 from pathlib import Path
-from .core import fetch, inspect_pdf, render, build, check_html, finalize
+from .core import fetch, inspect_pdf, render, build, check_html, finalize, init_workspace, check_state
 
 
 def main():
     parser = argparse.ArgumentParser(description="PDF 精读与离线 HTML 工具")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor")
+    workspace = commands.add_parser("workspace")
+    workspace.add_argument("source")
+    workspace.add_argument("--out", required=True)
+    state = commands.add_parser("state-check")
+    state.add_argument("source")
     for name in ("fetch", "inspect", "render-page", "crop", "build", "check", "browser-check", "finalize"):
         cmd = commands.add_parser(name)
         cmd.add_argument("source")
@@ -41,6 +46,12 @@ def main():
             return 0 if versions["chromium_installed"] else 2
         elif args.command == "fetch":
             fetch(args.source, args.out)
+        elif args.command == "workspace":
+            init_workspace(args.source, args.out)
+        elif args.command == "state-check":
+            result = check_state(args.source)
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 0 if result["passed"] else 2
         elif args.command == "inspect":
             inspect_pdf(args.source, args.out)
         elif args.command in ("crop", "render-page"):

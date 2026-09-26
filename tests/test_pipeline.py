@@ -211,3 +211,58 @@ def test_invalid_crop_requests(case, page, box):
     path, _ = case
     with pytest.raises(ValueError):
         render(path / "paper.pdf", page, path / "invalid.png", box)
+
+
+def test_workspace_state_roundtrip(tmp_path):
+    from paper_reading.core import init_workspace, check_state
+    task = tmp_path / "task"
+    data = init_workspace("https://example.com/paper.pdf", task)
+    assert data["stage"] == "initialized"
+    report = check_state(task / "state.json")
+    assert report["passed"]
+    assert report["next_actions"]
+
+
+def test_workspace_refuses_nonempty_directory(tmp_path):
+    from paper_reading.core import init_workspace
+    task = tmp_path / "task"
+    task.mkdir()
+    (task / "keep.txt").write_text("keep", encoding="utf-8")
+    with pytest.raises(ValueError, match="非空"):
+        init_workspace("paper.pdf", task)
+    assert (task / "keep.txt").read_text(encoding="utf-8") == "keep"
+
+
+def test_state_check_detects_missing_artifact_and_evidence(tmp_path):
+    from paper_reading.core import init_workspace, check_state, dump
+    task = tmp_path / "task"
+    data = init_workspace("paper.pdf", task)
+    data["artifacts"]["pdf"] = {"kind": "pdf", "path": "paper.pdf", "status": "ready"}
+    data["claims"].append({"id": "cl-main", "text": "Claim", "status": "supported", "confidence": "high", "evidence_ids": ["ev-missing"]})
+    dump(task / "state.json", data)
+    report = check_state(task / "state.json")
+    assert not report["passed"]
+    assert any("产物不存在" in item for item in report["errors"])
+    assert any("未知证据" in item for item in report["errors"])
+
+
+def test_finalized_state_requires_verified_html(tmp_path):
+    from paper_reading.core import init_workspace, check_state, dump
+    task = tmp_path / "task"
+    data = init_workspace("paper.pdf", task)
+    data["stage"] = "finalized"
+    dump(task / "state.json", data)
+    report = check_state(task / "state.json")
+    assert not report["passed"]
+    assert any("final-html" in item for item in report["errors"])
+
+
+def test_state_check_rejects_outside_artifact(tmp_path):
+    from paper_reading.core import init_workspace, check_state, dump
+    task = tmp_path / "task"
+    data = init_workspace("paper.pdf", task)
+    data["artifacts"]["outside"] = {"kind": "other", "path": "../outside.txt", "status": "planned"}
+    dump(task / "state.json", data)
+    report = check_state(task / "state.json")
+    assert not report["passed"]
+    assert any("越出任务目录" in item for item in report["errors"])

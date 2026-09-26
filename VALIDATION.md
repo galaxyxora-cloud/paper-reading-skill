@@ -1,4 +1,4 @@
-# 0.2.0 验证记录
+# 0.3.0 验证记录
 
 测试日期：2026-09-26。执行环境：Windows、Python 3.12.14、Chromium 153.0.8010.12（Playwright 1.63.0）。本次测试覆盖工具链实际执行，不声称任意论文、任意网络或任意操作系统都不会出错。
 
@@ -7,7 +7,7 @@
 | 项目 | 实际结果 |
 |---|---|
 | 新环境安装 | 从独立虚拟环境安装项目、依赖与 Chromium，doctor 成功 |
-| 回归测试 | 30 passed，最后一轮 1.12 秒 |
+| 回归测试 | 35 passed，最后一轮 1.12 秒 |
 | 标准 CLI 全流程 | fetch → inspect → render-page → crop → build → check → browser-check → finalize，全通过 |
 | 网页回退 | localhost 页面 citation_pdf_url 链接下载真实 PDF 字节成功 |
 | arXiv 失败回退 | 模拟首个 PDF 503，验证 abs 页面和其 PDF 链接依次被访问 |
@@ -24,6 +24,7 @@
 | wheel 分发 | 实际构建 wheel，装进第二个全新虚拟环境；从非源码目录完整运行，确认导入来自 site-packages |
 | Skill 安装 | 完整复制 agents/references；重复安装明确拒绝且保留已有目录 |
 | Skill 格式 | Skill Creator quick_validate 通过 |
+| 可恢复状态 | workspace 初始化、非空目录保护、state-check 结构/产物/证据引用/最终阶段检查通过 |
 | 发布检查 | Python 语法、JSON、Markdown 相对链接、代码无注释/文档字符串、模板/配置无注释通过 |
 
 ## 测试依赖版本

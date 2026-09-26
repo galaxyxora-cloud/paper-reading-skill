@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "source", "stage", "updated_at", "objective", "completed", "next_actions", "evidence", "claims", "symbols", "artifacts", "open_questions", "decisions", "last_error", "handoff"],
+  "properties": {
+    "version": {"const": 1},
+    "source": {"type": "string", "minLength": 1},
+    "stage": {"enum": ["initialized", "acquired", "inspected", "evidence", "writing", "qa", "finalized", "blocked"]},
+    "updated_at": {"type": "string", "minLength": 1},
+    "objective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["audience", "focus", "deliverable"],
+      "properties": {
+        "audience": {"type": "string", "minLength": 1},
+        "focus": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "deliverable": {"type": "string", "minLength": 1}
+      }
+    },
+    "completed": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "next_actions": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "status", "locator", "note"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^ev-[a-z0-9-]+$"},
+          "kind": {"enum": ["text", "equation", "figure", "table", "algorithm", "resource"]},
+          "status": {"enum": ["located", "verified", "missing", "not-applicable"]},
+          "locator": {"type": "string", "minLength": 1},
+          "note": {"type": "string", "minLength": 1},
+          "artifact": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "text", "status", "confidence", "evidence_ids"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^cl-[a-z0-9-]+$"},
+          "text": {"type": "string", "minLength": 1},
+          "status": {"enum": ["open", "partial", "supported", "rejected"]},
+          "confidence": {"enum": ["low", "medium", "high"]},
+          "evidence_ids": {"type": "array", "items": {"type": "string", "pattern": "^ev-[a-z0-9-]+$"}, "uniqueItems": true}
+        }
+      }
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["symbol", "meaning", "shape_or_unit", "scope"],
+        "properties": {
+          "symbol": {"type": "string", "minLength": 1},
+          "meaning": {"type": "string", "minLength": 1},
+          "shape_or_unit": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "path", "status"],
+        "properties": {
+          "kind": {"enum": ["pdf", "inspection", "page", "crop", "article", "draft-html", "qa", "final-html", "other"]},
+          "path": {"type": "string", "minLength": 1},
+          "status": {"enum": ["planned", "ready", "verified", "stale", "failed"]},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "open_questions": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision", "reason"],
+        "properties": {
+          "decision": {"type": "string", "minLength": 1},
+          "reason": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "last_error": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stage", "message", "attempts"],
+          "properties": {
+            "stage": {"type": "string", "minLength": 1},
+            "message": {"type": "string", "minLength": 1},
+            "attempts": {"type": "integer", "minimum": 1}
+          }
+        }
+      ]
+    },
+    "handoff": {"type": "string", "minLength": 1}
+  }
+}

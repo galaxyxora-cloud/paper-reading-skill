@@ -62,6 +62,9 @@ Paper Deep Reading Skill 是面向研究生和科研人员的论文精读工作�
 
 也可以补充“我刚入门”“重点讲推导”“准备复现”“准备组会”或“评估能否作为课题”。这些偏好调整篇幅分配，不省略关键证据，也不要求用户必须先填写背景问卷。
 
+## 可恢复任务状态
+
+每篇论文任务可用 `workspace` 创建结构化 `state.json`，集中记录阅读目标、当前阶段、证据与主张关系、公式符号、产物身份、未决问题、失败次数和下一步。通过 `state-check` 可在中断、上下文压缩、换会话或交付前核对可信断点，从文件继续工作，不依赖对话中的隐含记忆。
 ## 阅读依据与交付边界
 
 - 先获取和读取 PDF 正文，并定位关键图表与公式；不能仅凭摘要生成成品。
@@ -71,7 +74,7 @@ Paper Deep Reading Skill 是面向研究生和科研人员的论文精读工作�
 - 默认覆盖理解一篇论文的主要研究维度，但不承诺穷尽某个学科的所有知识；深度取决于论文可访问材料与调用智能体的能力。
 - 自动校验保证文件与展示流程的基本可靠性，不能替代科学判断。信息不足时保留问题和证据缺口，而不是编造完整答案。
 
-版本：0.2.0。需要 Python 3.10+；建议 Python 3.12。使用独立虚拟环境，不使用系统 Python 的共享依赖。
+版本：0.3.0。需要 Python 3.10+；建议 Python 3.12。使用独立虚拟环境，不使用系统 Python 的共享依赖。
 
 ## 安装与环境验证
 
@@ -117,7 +120,7 @@ Codex 常见位置是 `~/.codex/skills`。其他智能体使用各自配置的�
 
 ## 标准流程
 
-1. **环境与输入**：运行 doctor，确认 PDF 链接或本地文件，为每篇论文建立独立任务目录。
+1. **环境与输入**：运行 doctor，用 workspace 为每篇论文建立独立任务目录和可恢复 state.json；继续任务先运行 state-check。
 2. **获取与解析**：优先提供的 URL，必要时网页 PDF 链接/arXiv 回退；保存下载日志与逐页解析报告。
 3. **核验与裁剪**：智能体阅读正文、定位元素、渲染原页后裁剪；核验裁剪、公式与表格数值，不能只读摘要。
 4. **写作**：按 Skill 的理解路径填 article.json，核查资源、接收信息；人工核验字段只能在真实检查后设为 true。
@@ -125,14 +128,16 @@ Codex 常见位置是 `~/.codex/skills`。其他智能体使用各自配置的�
 6. **最终交付**：finalize 核对通过的 QA 报告与 HTML 哈希后复制成品，交付单文件和准确自检。
 
 ```bash
-python -m paper_reading fetch https://arxiv.org/pdf/论文编号 --out work/paper.pdf
-python -m paper_reading inspect work/paper.pdf --out work/inspection.json
-python -m paper_reading render-page work/paper.pdf --page 3 --out work/page3.png
-python -m paper_reading crop work/paper.pdf --page 3 --box 40 70 550 400 --out work/figure1.png
-python -m paper_reading build work/article.json --out work/reading.draft.html
-python -m paper_reading check work/reading.draft.html
-python -m paper_reading browser-check work/reading.draft.html --out work/browser-check.json
-python -m paper_reading finalize work/reading.draft.html --qa work/browser-check.json --out work/reading.html
+python -m paper_reading workspace https://arxiv.org/pdf/论文编号 --out work/paper-id
+python -m paper_reading state-check work/paper-id/state.json
+python -m paper_reading fetch https://arxiv.org/pdf/论文编号 --out work/paper-id/paper.pdf
+python -m paper_reading inspect work/paper-id/paper.pdf --out work/paper-id/inspection.json
+python -m paper_reading render-page work/paper-id/paper.pdf --page 3 --out work/paper-id/page3.png
+python -m paper_reading crop work/paper-id/paper.pdf --page 3 --box 40 70 550 400 --out work/paper-id/figure1.png
+python -m paper_reading build work/paper-id/article.json --out work/paper-id/reading.draft.html
+python -m paper_reading check work/paper-id/reading.draft.html
+python -m paper_reading browser-check work/paper-id/reading.draft.html --out work/paper-id/browser-check.json
+python -m paper_reading finalize work/paper-id/reading.draft.html --qa work/paper-id/browser-check.json --out work/paper-id/reading.html
 ```
 
 论文编号和裁剪坐标必须根据实际输入替换。article.json 由智能体从 [输入模板](examples/article.json) 创建，模板默认不通过核验。字段规范见 [数据契约](skills/paper-deep-reading/references/tooling.md)，写作要求见 [文章规范](skills/paper-deep-reading/references/writing.md)。`paper-read` 与 `python -m paper_reading` 等价，后者不依赖脚本 PATH。
@@ -147,6 +152,7 @@ paper-reading-skill/
     SKILL.md
     agents/openai.yaml
     references/tooling.md
+    references/state.md
     references/writing.md
     references/graduate-reading.md
   src/paper_reading/
