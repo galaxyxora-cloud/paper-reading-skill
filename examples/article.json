@@ -16,6 +16,7 @@
     {"id":"overview","title":"论文概览","html":"<p>替换为精读内容。</p>"},
     {"id":"resources","title":"投稿与资源信息","html":"<p>记录检索日期与来源。</p>"},
     {"id":"motivation","title":"背景与动机","html":"<p>常见 pipeline 与断点。</p>"},
+    {"id":"knowledge-map","title":"知识地图","html":"<p>列出理解本文所需的概念与学习顺序、目标论文和相关工作的有据关系，以及待验证的新角度；每条关系附来源。</p>"},
     {"id":"problem","title":"核心瓶颈","html":"<p>输入、输出、失败模式和假设。</p>"},
     {"id":"pipeline","title":"方法总览","html":"<p>训练与推理的数据流。</p><figure data-asset=\"fig1\"></figure>"},
     {"id":"method","title":"核心方法精读","html":"<p>按实际模块展开并就地解释公式。</p>"},
