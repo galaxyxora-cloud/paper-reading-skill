@@ -6,6 +6,22 @@ Paper Deep Reading Skill 是面向研究生和科研人员的论文精读工作�
 
 项目由 Skill 阅读规范和 Python 工具库组成。对话模式负责控制回答的范围、层次、证据边界和表达；成品模式在此基础上使用工具完成 PDF 获取、正文解析、局部图表裁剪、页面生成和浏览器检查。项目不绑定特定模型 API，也不把流畅回答或工具运行成功等同于论文已被正确理解。
 
+## 一条命令安装 Skill
+
+支持 Agent Skills 安装器的环境可以直接从 GitHub 安装：
+
+```bash
+npx skills add https://github.com/jianbaixuezhang/paper-reading-skill --skill paper-deep-reading
+```
+
+安装后向智能体提供论文 PDF、链接或片段，并调用 `$paper-deep-reading`。例如：
+
+> 使用 $paper-deep-reading 完整分析并审视这篇论文，检索最新相关文献，并提出可验证的优化方向。
+
+安装前可先检查 [`skills/paper-deep-reading/SKILL.md`](skills/paper-deep-reading/SKILL.md) 及其引用文件。GitHub 仓库是版本与源码的唯一来源；SkillsMP 等目录服务仅用于发现和跳转，具体收录与更新频率由相应平台决定。
+
+不使用 Node.js 安装器时，也可以按照下方“安装 Skill”章节，通过仓库自带脚本安装到 Codex 或其他兼容智能体的技能目录。
+
 ## 给一篇论文，能得到什么
 
 默认在对话中完成论文的完整分析与审视；用户明确只问一个问题时采用聚焦回答，明确要求文件时再交付单文件 HTML。完整对话分析覆盖方法、公式、实验、证据强弱、局限、复现、最新相关文献和优化方向；成品模式另外提供章节导航、原文关键图表、实验表格与浏览器验收。
