@@ -32,19 +32,9 @@
 
 PyMuPDF 1.28.2、BeautifulSoup 4.15.0、Jinja2 3.1.6、jsonschema 4.26.0、Playwright 1.63.0、pytest 9.1.1。代码已使用 `pymupdf` 导入方式，避免旧 `fitz` 导入的弃用警告。
 
-## 可复现命令
-
-```bash
-python -m pytest -q
-python scripts/smoke.py --out work/smoke --browser
-python scripts/release.py
-```
-
-单元测试和合成 smoke 不需要真实论文。浏览器步骤需要已安装 Chromium、联网访问 MathJax CDN；反向测试预期退出 2，脚本会确认这是预期错误。
-
 ## 未覆盖与边界
 
-- GitHub Actions 已配置 Windows/Linux、Python 3.10/3.12，以及 Linux 浏览器任务；远程 CI 要在上传后实际运行，本次本地没有 Linux/macOS 系统测试。
+- GitHub Actions 配置了 Windows/Linux、Python 3.10/3.12 和 Linux 浏览器任务；本记录只包含本地 Windows 实测，未包含 Linux/macOS 的执行结果。
 - 真实论文测试验证下载、正文、裁剪、公式和页面生成，未制作其完整 13 节精读文章，也未评估其他智能体的学术判断质量。
 - 图表/公式定位是启发式候选；复杂版式、扫描件、加密 PDF 和特定数学宏需要另行处理。不能用本次通过替代每篇论文的核验。
 - 离线测试通过的是正文、图片和 LaTeX 源码可读；默认 MathJax 排版仍依赖 CDN。

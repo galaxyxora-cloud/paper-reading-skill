@@ -14,13 +14,15 @@ Paper Deep Reading Skill 是面向研究生和科研人员的论文精读工作�
 npx skills add https://github.com/jianbaixuezhang/paper-reading-skill --skill paper-deep-reading
 ```
 
+默认安装到当前项目；若要在 Codex 的所有项目中使用，可在命令末尾加 `-g -a codex`。
+
 安装后向智能体提供论文 PDF、链接或片段，并调用 `$paper-deep-reading`。例如：
 
 > 使用 $paper-deep-reading 完整分析并审视这篇论文，检索最新相关文献，并提出可验证的优化方向。
 
 安装前可先检查 [`skills/paper-deep-reading/SKILL.md`](skills/paper-deep-reading/SKILL.md) 及其引用文件。GitHub 仓库是版本与源码的唯一来源；SkillsMP 等目录服务仅用于发现和跳转，具体收录与更新频率由相应平台决定。
 
-不使用 Node.js 安装器时，也可以按照下方“安装 Skill”章节，通过仓库自带脚本安装到 Codex 或其他兼容智能体的技能目录。
+对话精读只需安装 Skill。生成 HTML 时还需按下方说明安装 Python 工具库。不使用 Node.js 安装器时，可用仓库自带脚本安装 Skill。
 
 ## 给一篇论文，能得到什么
 
@@ -103,19 +105,25 @@ npx skills add https://github.com/jianbaixuezhang/paper-reading-skill --skill pa
 - 成品中的图表保留编号、页码、坐标轴、图例和重要脚注；复刻表格逐格核对数值。
 - 自动校验保证文件与展示流程的基本可靠性，不能替代科学判断。信息不足时保留问题和证据缺口，而不是编造完整答案。
 
-版本：0.5.0。需要 Python 3.10+；建议 Python 3.12。使用独立虚拟环境，不使用系统 Python 的共享依赖。
+当前版本：0.5.0。成品模式需要 Python 3.10+（建议 3.12）及独立虚拟环境。
 
-## 安装与环境验证
+## 成品模式：安装 Python 工具库
 
-解压源码或克隆仓库，进入包含本文件和 `pyproject.toml` 的目录。以下安装需要网络；后续读取本地 PDF 和生成 HTML 不需要网络，公式在线排版检查需要访问 MathJax CDN。
+先获取完整源码并进入仓库根目录：
+
+```bash
+git clone https://github.com/jianbaixuezhang/paper-reading-skill.git
+cd paper-reading-skill
+```
+
+已有源码时直接进入包含 `pyproject.toml` 的目录。安装需要网络；后续读取本地 PDF 和生成 HTML 不需要网络，公式在线排版检查需要访问 MathJax CDN。
 
 Windows PowerShell：
 
 ```powershell
 py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install ".[test,qa]"
+.\.venv\Scripts\python.exe -m pip install ".[qa]"
 .\.venv\Scripts\python.exe -m playwright install chromium
-.\.venv\Scripts\python.exe -m paper_reading doctor
 ```
 
 若没有 `py` 命令，用已安装 Python 的完整路径替换。直接调用虚拟环境中的解释器，无需激活脚本或修改 PowerShell 执行策略。
@@ -124,14 +132,11 @@ macOS/Linux：
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install ".[test,qa]"
+.venv/bin/python -m pip install ".[qa]"
 .venv/bin/python -m playwright install chromium
-.venv/bin/python -m paper_reading doctor
 ```
 
 Linux 缺少浏览器系统依赖时，按 Playwright 提示运行 `python -m playwright install --with-deps chromium`，可能需要管理员权限。下面统一以 `python` 表示这个虚拟环境的解释器；没有激活环境时用其完整路径替换，所有命令必须使用同一解释器。
-
-开发者修改源码后需重新 `pip install ".[test,qa]"`；需要实时使用源码可改成 `pip install -e ".[test,qa]"`。
 
 ## 安装 Skill
 
@@ -207,19 +212,6 @@ paper-reading-skill/
   LICENSE
   .gitignore
 ```
-
-
-## 自行完整测试
-
-```bash
-python -m pytest -q
-python scripts/smoke.py --out work/smoke --browser
-python scripts/release.py
-```
-
-smoke 会生成合成 PDF，启动临时 localhost HTTP 服务验证网页→PDF 回退，再通过真实 CLI 执行解析、渲染、裁剪、HTML、静态与浏览器检查、finalize。带 `--browser` 时还会验证错误公式与缺失浏览器均被阻断；这两步预期退出码为 2，不代表测试失败。结束时关闭服务。结果与截图在指定输出目录，页面明确标识是工具测试而非真实论文总结。
-
-release 验证 Python 语法、代码无注释/文档字符串、JSON 语法、配置无注释、模板无注释、Markdown 相对链接存在，并将允许的源文件打包至 `dist/paper-reading-skill-source.zip`。发布包排除缓存与运行产物。当前实测范围见 [验证记录](VALIDATION.md)。
 
 ## 已知边界与排错
 
