@@ -1,6 +1,6 @@
 interface:
   display_name: "论文精读"
-  short_description: "论文精读、知识地图、近期文献与研究方向"
-  default_prompt: "使用 $paper-deep-reading 精读这篇论文，建立知识地图，核验近期文献并提出可验证的新角度。"
+  short_description: "阅读分析论文；对话精读或工作交付"
+  default_prompt: "阅读并分析这篇论文，解释方法与证据，梳理知识地图、近期文献和可验证的改进方向。"
 policy:
   allow_implicit_invocation: true
