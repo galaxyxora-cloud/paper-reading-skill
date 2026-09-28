@@ -11,14 +11,14 @@ Paper Deep Reading Skill 是面向研究生和科研人员的单篇论文精读�
 支持 Agent Skills 安装器的环境可以直接从 GitHub 安装：
 
 ```bash
-npx skills add https://github.com/jianbaixuezhang/paper-reading-skill --skill paper-deep-reading
+npx skills add https://github.com/galaxyxora-cloud/paper-reading-skill --skill paper-deep-reading
 ```
 
 默认安装到当前项目；若要在 Codex 的所有项目中使用，可在命令末尾加 `-g -a codex`。
 
 也可以直接在 Codex 工作模式中提供项目地址，让 Codex 检查仓库并完成安装：
 
-> 请检查并安装这个论文精读 Skill：https://github.com/jianbaixuezhang/paper-reading-skill
+> 请检查并安装这个论文精读 Skill：https://github.com/galaxyxora-cloud/paper-reading-skill
 
 安装时应读取仓库中的 `skills/paper-deep-reading/SKILL.md` 和安装说明，将完整 Skill 目录放入当前项目或个人技能目录；若要使用 HTML 工作流，再按下文安装 Python 工具库与 Chromium。需要写入个人技能目录或安装依赖时，按当前环境的权限提示操作。
 
@@ -127,7 +127,7 @@ Skill 允许自然语言触发，无需写 Skill 名称或逐项指定分析内�
 先获取完整源码并进入仓库根目录：
 
 ```bash
-git clone https://github.com/jianbaixuezhang/paper-reading-skill.git
+git clone https://github.com/galaxyxora-cloud/paper-reading-skill.git
 cd paper-reading-skill
 ```
 
